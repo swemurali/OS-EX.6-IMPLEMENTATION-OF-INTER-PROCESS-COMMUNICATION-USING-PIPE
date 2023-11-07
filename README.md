@@ -27,35 +27,37 @@ Read the message from the parent's pipe end, decode it, and print it.
 
 ## PROGRAM:
 ```
-import os
+#include <stdio.h>
+int main()
+{
 
-def main():
-    message = input("Enter a message: ").encode()
-    parent_pipe, child_pipe = os.pipe()
+  int fd[2],child; char a[10];
+  printf("\nEnter the string : ");
+  scanf("%s",a);
+  pipe(fd);
+  child=fork();
+  if(!child)
+{
+    close(fd[0]);
+    write(fd[1],a,5); wait(0);
+}
 
-    child_pid = os.fork()
+  else
 
-    if child_pid == 0:
-        os.close(parent_pipe)
-        os.write(child_pipe, message)
-        os.close(child_pipe)
-        exit(0)
-    else:
-        os.close(child_pipe)
-        received_message = os.read(parent_pipe, 100)
-        os.close(parent_pipe)
-        print("Parent received:", received_message.decode())
+{
+   close(fd[1]);
+    read(fd[0],a,5); printf("The string received from pipe is : %s",a);
+}
 
-if __name__ == "__main__":
-    main()
-
-
+return 0;
+}
 ```
 
 
 
 ## OUTPUT:
-![](1.png)
+![i-1](https://github.com/swemurali/OS-EX.6-IMPLEMENTATION-OF-INTER-PROCESS-COMMUNICATION-USING-PIPE/assets/94165336/c1aa48c7-2415-451d-9747-ca99e91d0950)
+
 ## Result:
 This output confirms that the parent process successfully received and printed the message sent by the child process through the pipe, demonstrating inter-process communication using pipes.
 
